@@ -8,6 +8,7 @@
 import logging
 import time
 import os
+from app import app
 
 
 class Logger:
@@ -18,11 +19,11 @@ class Logger:
             fmt = logging.Formatter('%(asctime)s - [%(levelname)s] %(message)s')
             current_time = time.strftime('%Y-%m-%d')
 
-            # log_dir = ConfigUtils().log_dir
+            log_dir = app.config.get('LOG_DIR')
 
-            # if not os.path.exists(log_dir):
-            #     os.mkdir(log_dir)
-            # self.LogFileName = os.path.join('log_dir', current_time + '.log')
+            if not os.path.exists(log_dir):
+                os.mkdir(log_dir)
+            self.LogFileName = os.path.join('log_dir', current_time + '.log')
             fh = logging.FileHandler('%s.log' % current_time)
             fh.setFormatter(fmt)
             fh.setLevel(file_level)
@@ -39,6 +40,7 @@ class Logger:
 
 # 打印日志装饰器
 # 目前只支持作为函数装饰器，对类的方法装饰无效
+'''
 class setlog(object):
     def __init__(self, func):
         self.__func = func
@@ -57,3 +59,4 @@ class setlog(object):
             logger.logger.error('调用[%s]失败!' % self.__func.__name__)
             logger.logger.error(e)
             raise e
+'''
