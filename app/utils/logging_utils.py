@@ -35,7 +35,7 @@ class Logger:
             raise e
 
 
-logger = Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
+# logger = Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
 
 # 打印日志装饰器
