@@ -7,7 +7,7 @@
     <link rel="icon" type="image/png" href="static/img/favicon.png">
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
     <title>
-        前卫克罗姆
+        测试工具 - {{title}}
     </title>
     <meta content='width=device-width, initial-scale=1.0, shrink-to-fit=no' name='viewport'/>
     <!--     Fonts and icons     -->
@@ -17,7 +17,7 @@
     <!-- CSS Files -->
     <link href="static/css/material-dashboard.css?v=2.1.2" rel="stylesheet"/>
     <!-- CSS Just for demo purpose, don't include it in your project -->
-    <link href="static/demo/demo.css" rel="stylesheet"/>
+    <!--    <link href="static/demo/demo.css" rel="stylesheet"/>-->
 </head>
 
 <body class="">
@@ -34,9 +34,9 @@
         <div class="sidebar-wrapper">
             <ul class="nav">
                 <li class="nav-item">
-                    <a class="nav-link" href="#">
+                    <a class="nav-link" href="/xtoz">
                         <i class="material-icons">dashboard</i>
-                        <p>Dashboard</p>
+                        <p>用例转换</p>
                     </a>
                 </li>
                 <li class="nav-item active ">
@@ -59,7 +59,7 @@
         <nav class="navbar navbar-expand-lg navbar-transparent navbar-absolute fixed-top ">
             <div class="container-fluid">
                 <div class="navbar-wrapper">
-                    <a class="navbar-brand" href="javascript:;">Home</a>
+                    <a class="navbar-brand" href="javascript:;">{{title}}</a>
                 </div>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" aria-controls="navigation-index"
                         aria-expanded="false" aria-label="Toggle navigation">
@@ -127,12 +127,8 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
-                    <div class="col-md-8">
-
-                    </div>
-                    <div class="col-md-4">
-
-                    </div>
+                    {% block content %}
+                    {% endblock %}
                 </div>
             </div>
         </div>
