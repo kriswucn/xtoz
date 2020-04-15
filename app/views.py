@@ -34,8 +34,10 @@ def xtoz():
 
         with open(csv_file, 'w', newline='') as f:
             ff = csv.writer(f)
+            header = ['所属模块', '用例标题', '步骤', '预期', '关键词', '用例类型', '优先级']
+            ff.writerow(header)
             for t in cases:
-                ff.writerow([t.get('id'), t.get('name'), t.get('step'), t.get('expecting'), t.get('priority')])
+                ff.writerow(['', t.get('name'), t.get('step'), t.get('expecting'), '', '功能测试', t.get('priority')])
                 # logger.logger.info('解析测试用例 -> %s' % t.get('name'))
 
         # return render_template('xtoz.html', title='用例转换')

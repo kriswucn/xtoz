@@ -58,6 +58,10 @@ class XmindUtils(object):
                 expecting_str = ''
 
                 i = 1
+
+                if step_dict is None:
+                    raise ValueError('未发现可用的测试用例')
+
                 for s in step_dict:
                     step_str += '%d. %s\n\r' % (i, s.get('title'))
                     i += 1
