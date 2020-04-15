@@ -4,6 +4,10 @@ from flask import render_template, request, send_file
 from app import app
 from app.utils import file_utils as fu
 from app.utils import xmind_utils as xu
+from app.utils import logging_utils as lu
+import logging
+
+logger = lu.Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
 
 @app.route('/')
@@ -38,7 +42,7 @@ def xtoz():
             ff.writerow(header)
             for t in cases:
                 ff.writerow(['', t.get('name'), t.get('step'), t.get('expecting'), '', '功能测试', t.get('priority')])
-                # logger.logger.info('解析测试用例 -> %s' % t.get('name'))
+                logger.logger.info('解析测试用例 -> %s' % t.get('name'))
 
         # return render_template('xtoz.html', title='用例转换')
         return send_file(csv_file, as_attachment=True)
