@@ -23,19 +23,19 @@ class Logger:
 
             if not os.path.exists(log_dir):
                 os.mkdir(log_dir)
-            self.LogFileName = os.path.join('log_dir', current_time + '.log')
-            fh = logging.FileHandler('%s.log' % current_time)
+            self.LogFileName = os.path.join(log_dir, current_time + '.log')
+            fh = logging.FileHandler(self.LogFileName)
             fh.setFormatter(fmt)
             fh.setLevel(file_level)
             self.logger.addHandler(fh)
             sh = logging.StreamHandler()
             sh.setLevel(cmd_level)
-            # self.logger.addHandler(sh)
+            self.logger.addHandler(sh)
         except Exception as e:
             raise e
 
 
-# logger = Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
+logger = Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
 
 # 打印日志装饰器
