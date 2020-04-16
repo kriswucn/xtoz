@@ -6,4 +6,4 @@ logger = lu.Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
 if __name__ == '__main__':
     logger.logger.info('Application started')
-    app.run(debug=True)
+    app.run('0.0.0.0', port=8000)
