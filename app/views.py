@@ -41,7 +41,7 @@ def xtoz():
 
         case_counter = 0
 
-        with open(csv_file, 'w', newline='') as f:
+        with open(csv_file, 'w', encoding='gbk', newline='') as f:
             ff = csv.writer(f)
             header = ['所属模块', '用例标题', '步骤', '预期', '关键词', '用例类型', '优先级']
             ff.writerow(header)
