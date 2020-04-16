@@ -63,30 +63,34 @@ class XmindUtils(object):
                     raise ValueError('未发现可用的测试用例')
 
                 for s in step_dict:
-                    step_str += '%d. %s\n\r' % (i, s.get('title'))
-                    i += 1
+                    step_str += '%d. %s\r\n' % (i, s.get('title'))
+
                     # ----- 期望是步骤的子节点 BEGIN -----
                     # exp_dict = s.get('topics')
                     # 该步骤有期望
                     # if exp_dict is not None:
                     #     只取第一个topic
-                    #      expecting_str += '%s\n\r' % exp_dict[0].get('title')
+                    #      expecting_str += '%s\r\n' % exp_dict[0].get('title')
                     # else:
-                    #     expecting_str += '\n\r'
+                    #     expecting_str += '\r\n'
                     # ----- 期望是步骤的子节点 END -----
                     # ----- 期望是测试步骤的备注 BEGIN -----
                     tmp_expecting = s.get('note')
 
                     if tmp_expecting is not None:
-                        expecting_str += tmp_expecting.replace('\n', '').replace('\r', '')
+                        expecting_str += '%d. %s' % (i, tmp_expecting.replace('\r\n', '#'))
                     else:
-                        expecting_str += '\n\r'
+                        expecting_str += '%d. ' % i
+                    # 统一加上\r\n
+                    expecting_str += '\r\n'
+
+                    i += 1
                     # ----- 期望是测试步骤的备注 END -----
                 #
-                # print(step_str.rstrip('\n\r'))
-                # print(expecting_str.rstrip('\n\r'))
-                test_case_dict = {'id': case_id, 'name': case_name, 'step': step_str.rstrip('\n\r'),
-                                  'expecting': expecting_str.rstrip('\n\r'), 'priority': case_priority}
+                # print(step_str.rstrip('\r\n'))
+                # print(expecting_str.rstrip('\r\n'))
+                test_case_dict = {'id': case_id, 'name': case_name, 'step': step_str.rstrip('\r\n'),
+                                  'expecting': expecting_str.rstrip('\r\n'), 'priority': case_priority}
                 self._test_cases.append(test_case_dict)
             else:
                 self._parse(t.get('topics'), module_prefix)
