@@ -65,13 +65,23 @@ class XmindUtils(object):
                 for s in step_dict:
                     step_str += '%d. %s\n\r' % (i, s.get('title'))
                     i += 1
-                    exp_dict = s.get('topics')
+                    # ----- 期望是步骤的子节点 BEGIN -----
+                    # exp_dict = s.get('topics')
                     # 该步骤有期望
-                    if exp_dict is not None:
-                        # 只取第一个topic
-                        expecting_str += '%s\n\r' % exp_dict[0].get('title')
+                    # if exp_dict is not None:
+                    #     只取第一个topic
+                    #      expecting_str += '%s\n\r' % exp_dict[0].get('title')
+                    # else:
+                    #     expecting_str += '\n\r'
+                    # ----- 期望是步骤的子节点 END -----
+                    # ----- 期望是测试步骤的备注 BEGIN -----
+                    tmp_expecting = s.get('note')
+
+                    if tmp_expecting is not None:
+                        expecting_str += tmp_expecting.replace('\n', '').replace('\r', '')
                     else:
                         expecting_str += '\n\r'
+                    # ----- 期望是测试步骤的备注 END -----
                 #
                 # print(step_str.rstrip('\n\r'))
                 # print(expecting_str.rstrip('\n\r'))
