@@ -47,7 +47,7 @@ def xtoz():
             ff.writerow(header)
             for t in cases:
                 ff.writerow(['', t.get('name'), t.get('step'), t.get('expecting'), '', '功能测试', t.get('priority')])
-                logger.logger.info('解析测试用例 -> %s' % t.get('name'))
+                logger.logger.info('%s - 完成' % t.get('name'))
                 case_counter += 1
 
         logger.logger.info('[End]已生成测试用例%d个' % case_counter)
