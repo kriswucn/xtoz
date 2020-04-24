@@ -5,11 +5,13 @@ from app import app
 from app.utils import file_utils as fu
 from app.utils import xmind_utils as xu
 from app.utils import logging_utils as lu
+from app.utils import api_utils as au
 import logging
 
 logger = lu.Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
 
+# for page route
 @app.route('/')
 @app.route('/index')
 def index():
@@ -54,3 +56,43 @@ def xtoz():
 
         # return render_template('xtoz.html', title='用例转换')
         return send_file(csv_file, as_attachment=True)
+
+
+# for api
+# 所有通信协议
+@app.route('/api/dev-com-protocols', methods=['GET'])
+def dev_com_protocols():
+    if request.method == 'GET':
+        util = au.ApiUtils()
+        protocols = util.get_all_dev_com_protocols()
+        return protocols
+
+
+@app.route('/api/atomic-actions', methods=['GET'])
+def atomic_actions():
+    if request.method == 'GET':
+        ut = au.ApiUtils()
+        dev_com_protocol_id = request.args.get('dev-com-protocol-id')
+        i_id = int()
+        actions = ut.get_atomic_action(dev_com_protocol_id)
+        return actions
+
+
+@app.route('/api/atomic-action-pairs', methods=['GET'])
+def atomic_action_pairs():
+    if request.method == 'GET':
+        ut = au.ApiUtils()
+        atomic_action_id = request.args.get('atomic-action-id')
+        a_id = int(atomic_action_id)
+        pairs = ut.get_frame_pairs(a_id)
+        return pairs
+
+
+@app.route('/api/protocol-frame')
+def protocol_frame():
+    if request.method == 'GET':
+        ut = au.ApiUtils()
+        protocol_frame_id = request.args.get('protocol-frame-id')
+        pf_id = int(protocol_frame_id)
+        frame = ut.get_protocol_frame(pf_id)
+        return frame
