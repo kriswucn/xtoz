@@ -2,7 +2,6 @@
 import requests
 import config
 from urllib.parse import urljoin
-import os
 import json
 
 
@@ -52,7 +51,7 @@ class ApiUtils(object):
         return resp.text
 
     # 帧字段
-    def get_frame_fields(self, frame_field_id):
+    def get_frame_field(self, frame_field_id):
         url = urljoin(config.UMC_URL, '/admin/conf/frame-field/%s' % frame_field_id)
         resp = requests.get(url, cookies=self._cookies)
         return resp.text
@@ -62,6 +61,16 @@ if __name__ == '__main__':
     au = ApiUtils()
     # res = au.get_atomic_action(9)
     # res = au.get_frame_pairs(1042)
-    # res = au.get_protocol_frames(3240)
-    res = au.get_frame_field(8281)
-    print(res)
+    res = au.get_protocol_frame(3240)
+    # print(res)
+    d = json.loads(res)
+    field_list = []
+
+    fs = d.get('data').get('fields')
+    for field in fs:
+        tmp_field = {'id': field.get('frameFieldId'), 'order': field.get('frameOrder'),
+                     'value': field.get('fixedValue'), 'start': field.get('startIndex'),
+                     'length': field.get('fieldLength'), 'code': field.get('fieldCode'),
+                     'name': field.get('fieldName')}
+        field_list.append(tmp_field)
+        print(tmp_field)

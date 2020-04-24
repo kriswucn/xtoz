@@ -7,6 +7,7 @@ from app.utils import xmind_utils as xu
 from app.utils import logging_utils as lu
 from app.utils import api_utils as au
 import logging
+import json
 
 logger = lu.Logger(__name__, cmd_level=logging.INFO, file_level=logging.INFO)
 
@@ -73,7 +74,6 @@ def atomic_actions():
     if request.method == 'GET':
         ut = au.ApiUtils()
         dev_com_protocol_id = request.args.get('dev-com-protocol-id')
-        i_id = int()
         actions = ut.get_atomic_action(dev_com_protocol_id)
         return actions
 
@@ -83,16 +83,75 @@ def atomic_action_pairs():
     if request.method == 'GET':
         ut = au.ApiUtils()
         atomic_action_id = request.args.get('atomic-action-id')
-        a_id = int(atomic_action_id)
-        pairs = ut.get_frame_pairs(a_id)
+        pairs = ut.get_frame_pairs(atomic_action_id)
         return pairs
 
 
-@app.route('/api/protocol-frame')
+@app.route('/api/protocol-frame', methods=['GET'])
 def protocol_frame():
     if request.method == 'GET':
         ut = au.ApiUtils()
         protocol_frame_id = request.args.get('protocol-frame-id')
-        pf_id = int(protocol_frame_id)
-        frame = ut.get_protocol_frame(pf_id)
+        frame = ut.get_protocol_frame(protocol_frame_id)
         return frame
+
+
+@app.route('/api/detailed-protocol-frame', methods=['GET'])
+def detailed_protocol_frame():
+    if request.method == 'GET':
+        ret_dict = {'message': '', 'code': 0, 'data': {}}
+
+        ut = au.ApiUtils()
+        protocol_frame_id = request.args.get('protocol-frame-id')
+        frame = ut.get_protocol_frame(protocol_frame_id)
+
+        fields = json.loads(frame).get('data').get('fields')
+        field_list = []
+
+        for field in fields:
+            tmp_dict = {}
+            frame_field_id = field.get('frameFieldId')
+            tmp_dict.update({'frame_field_id': frame_field_id})
+            order = field.get('frameOrder')
+            tmp_dict.update({'order': order})
+            start = field.get('startIndex')
+            tmp_dict.update({'start': start})
+            length = field.get('fieldLength')
+            tmp_dict.update({'length': length})
+            code = field.get('fieldCode')
+            tmp_dict.update({'code': code})
+            name = field.get('fieldName')
+            tmp_dict.update({'name': name})
+            value = field.get('fixedValue')
+            tmp_dict.update({'value': value})
+
+            field_resp = ut.get_frame_field(frame_field_id)
+            field_data = json.loads(field_resp).get('data')
+            # 编码方式
+            encode_format = field_data.get('encodeFormat')
+            tmp_dict.update({'encode_format': encode_format})
+            data_type = field_data.get('dataType')
+            tmp_dict.update({'data_type': data_type})
+            data_format = field_data.get('dataFormat')
+            tmp_dict.update({'data_format': data_format})
+            high_byte_preceding = field_data.get('highBytePreceding')
+            tmp_dict.update({'high_byte_preceding': high_byte_preceding})
+            prefix_fill = field_data.get('prefixFillChar')
+            tmp_dict.update({'prefix_fill': prefix_fill})
+            suffix_fill = field_data.get('suffixFillChar')
+            tmp_dict.update({'suffix_fill': suffix_fill})
+            # 0: 不缩放
+            # 1: 除法
+            # 2: 乘法
+            # 3: 表达式
+            scale_method = field_data.get('scaleMethod')
+            tmp_dict.update({'scale_method': scale_method})
+            # 缩放比
+            field_scale = field_data.get('fieldScale')
+            tmp_dict.update({'field_scale': field_scale})
+
+            field_list.append(tmp_dict)
+
+        ret_dict.update({'data': field_list})
+
+        return json.dumps(ret_dict)
