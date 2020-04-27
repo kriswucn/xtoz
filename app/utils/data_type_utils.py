@@ -30,6 +30,10 @@ def low_byte_left(hex_str):
 
 
 # int to hex
+# scale_type:
+#   2: 乘以
+#   1: 除以
+#   0: 不操作
 def int_to_hex(num, length, scale_type=0, scale_value=1):
     # 16进制字符串
     # 倍数乘法和不缩放
@@ -47,17 +51,6 @@ def int_to_hex(num, length, scale_type=0, scale_value=1):
         return binascii.hexlify(hex_v).decode()
     elif scale_type == 1:
         raise Exception('除法操作暂不支持')
-
-    # hex_str = '{0:02x}'.format(int(num))
-    # hex_v = binascii.unhexlify(hex_str)
-    #
-    # while len(hex_v) < length:
-    #     hex_str += hex_str
-    #     hex_v = binascii.unhexlify(hex_str)
-    #
-    # hex_b = binascii.hexlify(hex_v).decode()
-    #
-    # return hex_b
 
 
 # float to hex
@@ -91,7 +84,7 @@ if __name__ == '__main__':
     # b = float_to_hex(num=a, length=2, scale_type=2, scale_value=100)
     # c = low_byte_left(b)
     # print(c)
-    version = 2
-    hex_str1 = int_to_hex(version, length=2)
+    x = 1.31
+    hex_str1 = float_to_hex(x, length=4, scale_type=2, scale_value=100)
     hex_ret = low_byte_left(hex_str1)
     print(hex_ret)
