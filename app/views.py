@@ -64,8 +64,11 @@ def xtoz():
 def frame_parse():
     if request.method == 'GET':
         hex_data = request.args.get('hex')
+        logger.logger.info('报文内容: %s' % hex_data)
+        dev_com_protocol_id = request.args.get('dev-com-protocol-id')
+        logger.logger.info('协议id：%s' % dev_com_protocol_id)
         ut = au.ApiUtils()
-        resp = ut.get_parsed_frame(9, hex_data)
+        resp = ut.get_parsed_frame(dev_com_protocol_id, hex_data)
         tmp_dict = json.loads(resp)
 
         # print(ret_dict)
@@ -101,5 +104,7 @@ def frame_parse():
         parsed_field_list.sort(key=lambda x: x.get('order'))
 
         ret_dict = {'code': 0, 'message': 'OK', 'data': {'records': parsed_field_list}}
+        logger.logger.info('解析成功')
+        logger.logger.info(json.dumps(ret_dict, indent=2))
 
         return json.dumps(ret_dict)
