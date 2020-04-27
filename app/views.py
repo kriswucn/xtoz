@@ -60,98 +60,46 @@ def xtoz():
 
 
 # for api
-# 所有通信协议
-@app.route('/api/dev-com-protocols', methods=['GET'])
-def dev_com_protocols():
+@app.route('/api/frame-parse', methods=['GET', 'POST'])
+def frame_parse():
     if request.method == 'GET':
-        util = au.ApiUtils()
-        protocols = util.get_all_dev_com_protocols()
-        return protocols
-
-
-@app.route('/api/atomic-actions', methods=['GET'])
-def atomic_actions():
-    if request.method == 'GET':
+        hex_data = request.args.get('hex')
         ut = au.ApiUtils()
-        dev_com_protocol_id = request.args.get('dev-com-protocol-id')
-        actions = ut.get_atomic_action(dev_com_protocol_id)
-        return actions
+        resp = ut.get_parsed_frame(9, hex_data)
+        tmp_dict = json.loads(resp)
 
+        # print(ret_dict)
+        parsed_fields = tmp_dict.get('data').get('queueParams').get('parsedFields')
+        parsed_field_list = []
 
-@app.route('/api/atomic-action-pairs', methods=['GET'])
-def atomic_action_pairs():
-    if request.method == 'GET':
-        ut = au.ApiUtils()
-        atomic_action_id = request.args.get('atomic-action-id')
-        pairs = ut.get_frame_pairs(atomic_action_id)
-        return pairs
+        for k, v in parsed_fields.items():
+            code = k
+            hex_str = v.get('hexString')
+            name = v.get('fieldDefinetion').get('fieldName')
+            field_value = v.get('fieldValue')
+            decoded_value = v.get('decodedValue')
+            order = v.get('fieldDefinetion').get('frameOrder')
+            index = v.get('fieldDefinetion').get('startIndex')
+            length = v.get('fieldDefinetion').get('fieldLength')
+            data_type = v.get('fieldDefinetion').get('dataType')
+            data_format = v.get('fieldDefinetion').get('dataFormat')
+            encode_format = v.get('fieldDefinetion').get('encodeFormat')
+            scale_method = v.get('fieldDefinetion').get('scaleMethod')
+            filed_scale = v.get('fieldDefinetion').get('fieldScale')
+            high_byte_preceding = v.get('fieldDefinetion').get('highBytePreceding')
+            prefix_fill = v.get('fieldDefinetion').get('prefixFillChar')
+            suffix_fill = v.get('fieldDefinetion').get('suffixFillChar')
 
+            tmp = {'order': order, 'index': index, 'length': length, 'hex_str': hex_str, 'field_value': field_value,
+                   'decoded_value': decoded_value, 'code': code, 'name': name, 'data_type': data_type,
+                   'data_format': data_format, 'encode_format': encode_format, 'scale_method': scale_method,
+                   'filed_scale': filed_scale, 'high_byte_preceding': high_byte_preceding,
+                   'prefix_fill': prefix_fill, 'suffix_fill': suffix_fill}
 
-@app.route('/api/protocol-frame', methods=['GET'])
-def protocol_frame():
-    if request.method == 'GET':
-        ut = au.ApiUtils()
-        protocol_frame_id = request.args.get('protocol-frame-id')
-        frame = ut.get_protocol_frame(protocol_frame_id)
-        return frame
+            parsed_field_list.append(tmp)
 
+        parsed_field_list.sort(key=lambda x: x.get('order'))
 
-@app.route('/api/detailed-protocol-frame', methods=['GET'])
-def detailed_protocol_frame():
-    if request.method == 'GET':
-        ret_dict = {'message': '', 'code': 0, 'data': {}}
-
-        ut = au.ApiUtils()
-        protocol_frame_id = request.args.get('protocol-frame-id')
-        frame = ut.get_protocol_frame(protocol_frame_id)
-
-        fields = json.loads(frame).get('data').get('fields')
-        field_list = []
-
-        for field in fields:
-            tmp_dict = {}
-            frame_field_id = field.get('frameFieldId')
-            tmp_dict.update({'frame_field_id': frame_field_id})
-            order = field.get('frameOrder')
-            tmp_dict.update({'order': order})
-            start = field.get('startIndex')
-            tmp_dict.update({'start': start})
-            length = field.get('fieldLength')
-            tmp_dict.update({'length': length})
-            code = field.get('fieldCode')
-            tmp_dict.update({'code': code})
-            name = field.get('fieldName')
-            tmp_dict.update({'name': name})
-            value = field.get('fixedValue')
-            tmp_dict.update({'value': value})
-
-            field_resp = ut.get_frame_field(frame_field_id)
-            field_data = json.loads(field_resp).get('data')
-            # 编码方式
-            encode_format = field_data.get('encodeFormat')
-            tmp_dict.update({'encode_format': encode_format})
-            data_type = field_data.get('dataType')
-            tmp_dict.update({'data_type': data_type})
-            data_format = field_data.get('dataFormat')
-            tmp_dict.update({'data_format': data_format})
-            high_byte_preceding = field_data.get('highBytePreceding')
-            tmp_dict.update({'high_byte_preceding': high_byte_preceding})
-            prefix_fill = field_data.get('prefixFillChar')
-            tmp_dict.update({'prefix_fill': prefix_fill})
-            suffix_fill = field_data.get('suffixFillChar')
-            tmp_dict.update({'suffix_fill': suffix_fill})
-            # 0: 不缩放
-            # 1: 除法
-            # 2: 乘法
-            # 3: 表达式
-            scale_method = field_data.get('scaleMethod')
-            tmp_dict.update({'scale_method': scale_method})
-            # 缩放比
-            field_scale = field_data.get('fieldScale')
-            tmp_dict.update({'field_scale': field_scale})
-
-            field_list.append(tmp_dict)
-
-        ret_dict.update({'data': field_list})
+        ret_dict = {'code': 0, 'message': 'OK', 'data': {'records': parsed_field_list}}
 
         return json.dumps(ret_dict)

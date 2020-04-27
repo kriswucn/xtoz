@@ -56,6 +56,13 @@ class ApiUtils(object):
         resp = requests.get(url, cookies=self._cookies)
         return resp.text
 
+    # 解析报文
+    def get_parsed_frame(self, dev_com_protocol_id, frame_data):
+        url = urljoin(config.UMC_URL, '/admin/operate/parse-hex-datagram')
+        params = {'devComProtocolId': dev_com_protocol_id, 'skipVerifyMeterNo': 1, 'hexDatagram': frame_data}
+        resp = requests.get(url, cookies=self._cookies, params=params)
+        return resp.text
+
 
 if __name__ == '__main__':
     au = ApiUtils()
